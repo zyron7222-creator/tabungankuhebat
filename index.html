@@ -1,1 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabungan Hebat - Nabung Sambil Main!</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div id="toast-container"></div>
+
+<div class="container">
+
+  <!-- ===================== TOP BAR ===================== -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="maskot" id="maskot-header">🐼</span>
+      <div>
+        <h1>Tabungan Hebat</h1>
+        <p>Nabung sambil main, jadi Sultan Kecil!</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="btn-tema-toggle" title="Ganti mode gelap/terang">🌙</button>
+      <button class="icon-btn" id="btn-pengingat" title="Atur pengingat menabung harian">🔔</button>
+    </div>
+  </div>
+
+  <!-- ===================== KARTU PROFIL / LEVEL ===================== -->
+  <div class="profil-card">
+    <div class="profil-maskot" id="maskot-profil">🐼</div>
+    <div class="profil-info">
+      <div class="nama-anak" id="nama-anak-tampil">Penabung Hebat</div>
+      <div class="level-label"><span id="label-level">Level: Pemula</span> &middot; <span id="label-xp">0 / 100 XP</span></div>
+      <div class="xp-bar-bg"><div class="xp-bar-fill" id="xp-bar-fill" style="width:0%;"></div></div>
+    </div>
+    <div class="profil-stats">
+      <div class="item"><div class="num" id="tampil-koin">0</div><div class="lbl">🪙 Koin</div></div>
+      <div class="item"><div class="num" id="tampil-streak">0</div><div class="lbl">🔥 Streak</div></div>
+      <div class="item"><div class="num" id="tampil-jumlah-badge">0</div><div class="lbl">🏆 Badge</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== NAVIGASI MENU ===================== -->
+  <div class="nav-menu" id="nav-menu">
+    <button data-tab="beranda" class="aktif">🏠 Beranda</button>
+    <button data-tab="tabungan">💰 Tabungan</button>
+    <button data-tab="target">🎯 Target</button>
+    <button data-tab="misi">🎮 Misi</button>
+    <button data-tab="pencapaian">🏆 Pencapaian</button>
+    <button data-tab="statistik">📊 Statistik</button>
+    <button data-tab="edukasi">📚 Edukasi</button>
+    <button data-tab="profil">👤 Profil</button>
+    <button data-tab="ortu">👨‍👩‍👧 Orang Tua</button>
+  </div>
+
+  <!-- ===================== TAB: BERANDA ===================== -->
+  <div class="tab-panel aktif" id="tab-beranda">
+    <div class="grid-2">
+      <div class="card">
+        <h2>📅 Misi Hari Ini</h2>
+        <div id="beranda-misi-list"></div>
+      </div>
+      <div class="card">
+        <h2>🎯 Target Aktif</h2>
+        <div id="beranda-target-ringkas"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📜 Transaksi Terbaru</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tanggal</th><th>Target</th><th>Jenis</th><th>Nominal</th><th>Keterangan</th></tr></thead>
+          <tbody id="beranda-riwayat-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="beranda-riwayat-empty" style="display:none;">Belum ada transaksi. Yuk mulai menabung!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: TABUNGAN (CATAT TRANSAKSI) ===================== -->
+  <div class="tab-panel" id="tab-tabungan">
+    <div class="card">
+      <h2>📝 Catat Transaksi</h2>
+      <form id="form-transaksi">
+        <label for="pilih-target-transaksi">Untuk Target</label>
+        <select id="pilih-target-transaksi"></select>
+
+        <label for="jenis-transaksi">Jenis Transaksi</label>
+        <select id="jenis-transaksi">
+          <option value="setor">Setor Tabungan (+)</option>
+          <option value="tarik">Tarik Tabungan (-)</option>
+        </select>
+
+        <label for="nominal-transaksi">Nominal (Rp)</label>
+        <input type="number" id="nominal-transaksi" min="1" placeholder="Contoh: 2000" required>
+
+        <label for="keterangan-transaksi">Keterangan</label>
+        <input type="text" id="keterangan-transaksi" placeholder="Contoh: Uang jajan hari ini">
+
+        <div class="error-msg" id="error-transaksi"></div>
+        <button type="submit" class="btn btn-primary">Catat Transaksi</button>
+        <p class="hint">Setor = dapat koin &amp; XP langsung. Tarik di atas Rp20.000 perlu persetujuan Orang Tua.</p>
+      </form>
+    </div>
+    <div class="card">
+      <h2>📜 Semua Riwayat Transaksi</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tanggal</th><th>Target</th><th>Jenis</th><th>Nominal</th><th>Keterangan</th><th>Status</th></tr></thead>
+          <tbody id="tabungan-riwayat-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="tabungan-riwayat-empty" style="display:none;">Belum ada transaksi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: TARGET ===================== -->
+  <div class="tab-panel" id="tab-target">
+    <div class="card">
+      <h2>➕ Buat Target Baru</h2>
+      <form id="form-target">
+        <label for="emoji-target">Pilih Ikon</label>
+        <select id="emoji-target">
+          <option value="📱">📱 HP</option>
+          <option value="🚲">🚲 Sepeda</option>
+          <option value="🎮">🎮 PS / Konsol Game</option>
+          <option value="🎁">🎁 Hadiah</option>
+          <option value="📚">📚 Buku</option>
+          <option value="⚽">⚽ Alat Olahraga</option>
+          <option value="✨">✨ Lainnya</option>
+        </select>
+
+        <label for="nama-target">Nama Target</label>
+        <input type="text" id="nama-target" placeholder="Contoh: Beli HP" required>
+
+        <label for="nominal-target">Target Nominal (Rp)</label>
+        <input type="number" id="nominal-target" min="1" placeholder="Contoh: 3000000" required>
+
+        <label for="tanggal-target">Tanggal Target</label>
+        <input type="date" id="tanggal-target" required>
+
+        <div class="error-msg" id="error-target"></div>
+        <button type="submit" class="btn btn-primary">Simpan Target</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>🎯 Daftar Target Tabungan</h2>
+      <div id="daftar-target"></div>
+    </div>
+
+    <div class="card">
+      <h2>🧮 Kalkulator Waktu Target</h2>
+      <label for="kalkulator-sisa">Sisa yang dibutuhkan (Rp)</label>
+      <input type="number" id="kalkulator-sisa" placeholder="Otomatis dari target terpilih">
+      <label for="kalkulator-harian">Rencana nabung per hari (Rp)</label>
+      <input type="number" id="kalkulator-harian" placeholder="Contoh: 5000">
+      <button class="btn btn-hijau" id="btn-hitung-kalkulator" type="button">Hitung Perkiraan Waktu</button>
+      <div class="hint" id="hasil-kalkulator"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: MISI ===================== -->
+  <div class="tab-panel" id="tab-misi">
+    <div class="card">
+      <h2>🎮 Misi Harian</h2>
+      <p class="hint" style="margin-bottom:12px;">Misi baru muncul otomatis setiap hari. Selesaikan untuk dapat koin &amp; XP bonus!</p>
+      <div id="misi-list"></div>
+    </div>
+    <div class="card">
+      <h2>💡 Tantangan Hemat Mingguan</h2>
+      <div id="tantangan-mingguan"></div>
+    </div>
+    <div class="card">
+      <h2>🎡 Spin Hadiah Mingguan</h2>
+      <p class="hint">Gunakan 20 koin untuk memutar roda hadiah (1x per minggu).</p>
+      <div class="spin-wrap">
+        <div class="spin-roda" id="spin-roda">🎡</div>
+        <div><button class="btn btn-kuning" id="btn-spin" style="width:auto; padding:10px 24px;">Putar Roda (20 koin)</button></div>
+        <div class="hint" id="spin-status"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🎲 Mini Game: Tebak Koin</h2>
+      <p class="hint">Buka kotak untuk cari koin tersembunyi. Maksimal 3x main per hari.</p>
+      <div class="tebak-grid" id="tebak-grid"></div>
+      <div class="hint" id="tebak-status" style="text-align:center;"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: PENCAPAIAN ===================== -->
+  <div class="tab-panel" id="tab-pencapaian">
+    <div class="card">
+      <h2>🏆 Badge &amp; Pencapaian</h2>
+      <div class="badge-grid" id="badge-grid"></div>
+    </div>
+    <div class="card">
+      <h2>⭐ Leaderboard Teman <span class="hint">(simulasi lokal)</span></h2>
+      <div id="leaderboard-list"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: STATISTIK ===================== -->
+  <div class="tab-panel" id="tab-statistik">
+    <div class="card">
+      <h2>📊 Ringkasan Keuangan</h2>
+      <div class="grid-3" id="statistik-grid"></div>
+    </div>
+    <div class="card">
+      <h2>📈 Level Akun</h2>
+      <p class="hint" style="margin-bottom:10px;">Pemula (0 XP) → Rajin (100 XP) → Hebat (300 XP) → Sultan Kecil (700 XP)</p>
+      <div class="xp-bar-bg" style="height:20px;"><div class="xp-bar-fill" id="xp-bar-fill-statistik" style="width:0%;"></div></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: EDUKASI ===================== -->
+  <div class="tab-panel" id="tab-edukasi">
+    <div class="card">
+      <h2>📚 Tips Mengatur Uang Saku</h2>
+      <div class="tip-card">Bagi uang sakumu jadi 3 bagian: nabung, jajan, dan sedekah/berbagi.</div>
+      <div class="tip-card">Catat setiap kali menabung, sekecil apapun jumlahnya. Konsisten lebih penting daripada besar.</div>
+      <div class="tip-card">Sebelum beli sesuatu, tunggu 1 hari dulu. Kalau besok masih pengen banget, baru beli.</div>
+      <div class="tip-card">Buat target yang jelas supaya semangat menabungnya lebih terasa.</div>
+    </div>
+    <div class="card">
+      <h2>📖 Cerita: Kenapa Menabung Itu Penting?</h2>
+      <div class="cerita-box">
+        Dahulu kala, ada seekor semut kecil yang rajin mengumpulkan makanan setiap hari, sedikit demi sedikit, jauh sebelum musim dingin tiba.
+        Temannya si belalang lebih suka bermain setiap hari tanpa menyisihkan apa pun. Ketika musim dingin datang, semut punya cukup persediaan
+        untuk bertahan dengan nyaman, sementara belalang kesulitan mencari makan. Sama seperti itu, menabung sedikit demi sedikit hari ini akan
+        membantumu meraih apa yang kamu inginkan di masa depan, tanpa perlu khawatir kehabisan.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: PROFIL ===================== -->
+  <div class="tab-panel" id="tab-profil">
+    <div class="card">
+      <h2>👤 Profil Penabung</h2>
+      <label for="input-nama-anak">Nama Kamu</label>
+      <input type="text" id="input-nama-anak" placeholder="Contoh: Kayla">
+      <button class="btn btn-primary" id="btn-simpan-nama">Simpan Nama</button>
+    </div>
+    <div class="card">
+      <h2>🐼 Pilih Maskot</h2>
+      <div class="maskot-grid" id="maskot-grid"></div>
+      <p class="hint" id="maskot-hint" style="margin-top:10px;"></p>
+    </div>
+    <div class="card">
+      <h2>🌈 Tema Warna <span class="hint">(dibuka pakai koin)</span></h2>
+      <div class="tema-grid" id="tema-grid"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: ORANG TUA ===================== -->
+  <div class="tab-panel" id="tab-ortu">
+    <div id="ortu-pin-gate" class="card pin-gate">
+      <h2 style="justify-content:center;">🔒 Area Orang Tua</h2>
+      <p class="hint">Masukkan PIN 4 digit untuk membuka dashboard orang tua.</p>
+      <input type="password" id="input-pin-ortu" maxlength="4" placeholder="PIN">
+      <div class="error-msg" id="error-pin"></div>
+      <button class="btn btn-primary" id="btn-buka-ortu" style="max-width:200px; margin:10px auto 0;">Buka Dashboard</button>
+      <p class="hint" id="hint-pin-default"></p>
+    </div>
+
+    <div id="ortu-dashboard" style="display:none;">
+      <div class="card">
+        <h2>👨‍👩‍👧 Dashboard Perkembangan Anak</h2>
+        <div class="grid-3" id="ortu-ringkas"></div>
+      </div>
+      <div class="card">
+        <h2>✅ Persetujuan Penarikan</h2>
+        <div id="ortu-approval-list"></div>
+      </div>
+      <div class="card">
+        <h2>💸 Beri Bonus Tugas</h2>
+        <label for="bonus-nominal">Nominal Bonus (Rp)</label>
+        <input type="number" id="bonus-nominal" min="1" placeholder="Contoh: 10000">
+        <label for="bonus-keterangan">Untuk Tugas Apa?</label>
+        <input type="text" id="bonus-keterangan" placeholder="Contoh: Bantu bersih-bersih rumah">
+        <label for="bonus-target">Masuk ke Target</label>
+        <select id="bonus-target"></select>
+        <div class="error-msg" id="error-bonus"></div>
+        <button class="btn btn-hijau" id="btn-beri-bonus">Beri Bonus</button>
+      </div>
+      <div class="card">
+        <h2>⚙️ Pengaturan PIN</h2>
+        <label for="pin-baru">Ganti PIN (4 digit)</label>
+        <input type="password" id="pin-baru" maxlength="4" placeholder="PIN baru">
+        <button class="btn btn-outline" id="btn-ganti-pin" style="border-color:var(--biru); color:var(--biru);">Simpan PIN Baru</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>Tabungan Hebat &mdash; semua data tersimpan otomatis di browser kamu (localStorage), tanpa perlu login.</footer>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
